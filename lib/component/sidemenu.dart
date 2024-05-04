@@ -86,7 +86,7 @@ class SideMenu extends StatelessWidget {
                 width: 40,
                 height: 50,
                 child: Image.asset(
-                  'images/profile2.png',
+                  'images/quiz.png',
                   color: AppColors.iconGray,
                 ),
               ),

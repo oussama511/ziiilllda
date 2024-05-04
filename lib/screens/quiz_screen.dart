@@ -22,16 +22,10 @@ class QuizScreenWithDashboard extends StatelessWidget {
 
     return Scaffold(
       key: _drawerKey,
-      drawer: SizedBox(
-        width: 100,
-        child: SideMenu(
-          screenHeight: screenHeight,
-        ),
-      ),
       appBar: !Responsive.isDesktop(context)
           ? AppBar(
               elevation: 0,
-              backgroundColor: AppColors.white,
+              backgroundColor: Color.fromARGB(255, 193, 201, 242),
               leading: IconButton(
                 onPressed: () {
                   _drawerKey.currentState?.openDrawer();
@@ -53,11 +47,6 @@ class QuizScreenWithDashboard extends StatelessWidget {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            if (Responsive.isDesktop(context))
-              Expanded(
-                flex: 1,
-                child: SideMenu(screenHeight: screenHeight),
-              ),
             Expanded(
               flex: 10,
               child: Container(
@@ -65,7 +54,9 @@ class QuizScreenWithDashboard extends StatelessWidget {
                 height: screenHeight,
                 child: SingleChildScrollView(
                   padding: const EdgeInsets.symmetric(
-                      vertical: 30.0, horizontal: 30.0),
+                    vertical: 30.0,
+                    horizontal: 30.0,
+                  ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -73,36 +64,12 @@ class QuizScreenWithDashboard extends StatelessWidget {
                       SizedBox(
                         height: SizeConfig.blockSizeVertical * 4,
                       ),
-                      // Replace the text widget with QuizScreen
-                      QuizScreen(),
-                      SizedBox(
-                        height: SizeConfig.blockSizeVertical * 4,
-                      ),
-                      if (!Responsive.isDesktop(context)) PaymentDetailList(),
+                      // Add your QuizScreen content here
                     ],
                   ),
                 ),
               ),
             ),
-            if (Responsive.isDesktop(context))
-              Expanded(
-                flex: 4,
-                child: Container(
-                  width: double.infinity,
-                  height: screenHeight,
-                  color: AppColors.secondaryBg,
-                  padding:
-                      EdgeInsets.symmetric(vertical: 30.0, horizontal: 30.0),
-                  child: SingleChildScrollView(
-                    child: Column(
-                      children: [
-                        AppBarActionItems(),
-                        if (Responsive.isDesktop(context)) PaymentDetailList(),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
           ],
         ),
       ),

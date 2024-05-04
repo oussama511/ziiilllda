@@ -5,9 +5,10 @@ import 'package:operator_forvia/component/AppBarActionItems.dart';
 import 'package:operator_forvia/component/barChartComponent.dart';
 import 'package:operator_forvia/component/historyTable.dart';
 import 'package:operator_forvia/component/paymentDetailList.dart';
-import 'package:operator_forvia/component/sidemenu.dart';
+import 'package:operator_forvia/component/sideMenu.dart';
 import 'package:operator_forvia/config/responsive.dart';
 import 'package:operator_forvia/config/size_config.dart';
+import 'package:operator_forvia/data.dart';
 import 'package:operator_forvia/style/colors.dart';
 import 'package:operator_forvia/style/style.dart';
 
@@ -21,6 +22,9 @@ class _Dashboard2State extends State<Dashboard2> {
   late Stopwatch _stopwatch;
   late Timer _timer;
   String _display = '00:00:00';
+  bool _isValidated = false;
+  String? _selectedOperation;
+  bool _isStopwatchRunning = false;
 
   @override
   void initState() {
@@ -49,12 +53,33 @@ class _Dashboard2State extends State<Dashboard2> {
 
   void _startStopwatch() {
     setState(() {
-      _stopwatch.start();
+      if (_selectedOperation != null) {
+        _isStopwatchRunning = true;
+        _stopwatch.start();
+      } else {
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text('Please select an operation.'),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: Text('OK'),
+                ),
+              ],
+            );
+          },
+        );
+      }
     });
   }
 
   void _stopStopwatch() {
     setState(() {
+      _isStopwatchRunning = false;
       _stopwatch.stop();
     });
   }
@@ -63,7 +88,72 @@ class _Dashboard2State extends State<Dashboard2> {
     setState(() {
       _stopwatch.reset();
       _display = '00:00:00';
+      _isStopwatchRunning = false;
+      _selectedOperation = null; // Reset selected operation
     });
+  }
+
+  void _validateTime() {
+    // Show dialog or bottom sheet for validation
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          contentPadding: EdgeInsets.zero,
+          content: SizedBox(
+            width: 300, // Adjust the width as needed
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                SizedBox(height: 20),
+                Center(
+                  child: Text(
+                    'Validation',
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+                SizedBox(height: 20),
+                ElevatedButton(
+                  onPressed: () {
+                    setState(() {
+                      _isValidated = true;
+                    });
+                    Navigator.of(context).pop();
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 16.0),
+                    child: Text(
+                      'Validé',
+                      style: TextStyle(fontSize: 18),
+                    ),
+                  ),
+                ),
+                SizedBox(height: 10),
+                ElevatedButton(
+                  onPressed: () {
+                    setState(() {
+                      _isValidated = false;
+                    });
+                    Navigator.of(context).pop();
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 16.0),
+                    child: Text(
+                      'Non Validé',
+                      style: TextStyle(fontSize: 18),
+                    ),
+                  ),
+                ),
+                SizedBox(height: 20),
+              ],
+            ),
+          ),
+        );
+      },
+    );
   }
 
   @override
@@ -120,10 +210,12 @@ class _Dashboard2State extends State<Dashboard2> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      PrimaryText(
-                        text: 'Time Counting Interface',
-                        size: 30,
-                        fontWeight: FontWeight.w800,
+                      Center(
+                        child: PrimaryText(
+                          text: 'Time Counting Interface',
+                          size: 30,
+                          fontWeight: FontWeight.w800,
+                        ),
                       ),
                       SizedBox(
                         height: SizeConfig.blockSizeVertical * 4,
@@ -133,7 +225,7 @@ class _Dashboard2State extends State<Dashboard2> {
                         children: [
                           PrimaryText(
                             text: _display,
-                            size: 40,
+                            size: 120, // Increased size
                             fontWeight: FontWeight.bold,
                           ),
                         ],
@@ -141,30 +233,50 @@ class _Dashboard2State extends State<Dashboard2> {
                       SizedBox(
                         height: SizeConfig.blockSizeVertical * 4,
                       ),
+                      DropdownButton<String>(
+                        hint: Text('Select Operation'),
+                        value: _selectedOperation,
+                        onChanged: _isStopwatchRunning
+                            ? null
+                            : (newValue) {
+                                setState(() {
+                                  _selectedOperation = newValue;
+                                });
+                              },
+                        items: transactionHistory
+                            .map<DropdownMenuItem<String>>(
+                              (item) => DropdownMenuItem(
+                                value: item['label'],
+                                child: Text(item['label']!),
+                              ),
+                            )
+                            .toList(),
+                      ),
+                      SizedBox(
+                        height: SizeConfig.blockSizeVertical * 2,
+                      ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          ElevatedButton(
-                            onPressed: () {
-                              // Add functionality to navigate to the quiz screen here
-                              // For example:
-                              // Navigator.push(context, MaterialPageRoute(builder: (context) => QuizScreen()));
-                            },
-                            child: Text('Take Quiz'),
-                          ),
                           ElevatedButton(
                             onPressed: _startStopwatch,
                             child: Text('Start'),
                           ),
                           SizedBox(width: 20),
                           ElevatedButton(
-                            onPressed: _stopStopwatch,
+                            onPressed:
+                                _isStopwatchRunning ? _stopStopwatch : null,
                             child: Text('Stop'),
                           ),
                           SizedBox(width: 20),
                           ElevatedButton(
                             onPressed: _resetStopwatch,
                             child: Text('Reset'),
+                          ),
+                          SizedBox(width: 20),
+                          ElevatedButton(
+                            onPressed: _validateTime,
+                            child: Text('Validation'),
                           ),
                         ],
                       ),

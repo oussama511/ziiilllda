@@ -76,7 +76,7 @@ class Barchartcomponent extends StatelessWidget {
             barRods: [
               BarChartRodData(
                 y: 10,
-                colors: [Colors.black],
+                colors: [Color.fromARGB(255, 9, 105, 137)],
                 borderRadius: BorderRadius.circular(0),
                 width: Responsive.isDesktop(context) ? 40 : 10,
                 backDrawRodData: BackgroundBarChartRodData(
@@ -92,7 +92,7 @@ class Barchartcomponent extends StatelessWidget {
             barRods: [
               BarChartRodData(
                 y: 50,
-                colors: [Colors.black],
+                colors: [const Color.fromARGB(255, 9, 105, 137)],
                 borderRadius: BorderRadius.circular(0),
                 width: Responsive.isDesktop(context) ? 40 : 10,
                 backDrawRodData: BackgroundBarChartRodData(
@@ -108,7 +108,7 @@ class Barchartcomponent extends StatelessWidget {
             barRods: [
               BarChartRodData(
                 y: 30,
-                colors: [Colors.black],
+                colors: [Color.fromARGB(255, 9, 105, 137)],
                 borderRadius: BorderRadius.circular(0),
                 width: Responsive.isDesktop(context) ? 40 : 10,
                 backDrawRodData: BackgroundBarChartRodData(
@@ -124,7 +124,7 @@ class Barchartcomponent extends StatelessWidget {
             barRods: [
               BarChartRodData(
                 y: 80,
-                colors: [Colors.black],
+                colors: [Color.fromARGB(255, 9, 105, 137)],
                 borderRadius: BorderRadius.circular(0),
                 width: Responsive.isDesktop(context) ? 40 : 10,
                 backDrawRodData: BackgroundBarChartRodData(
@@ -140,7 +140,7 @@ class Barchartcomponent extends StatelessWidget {
             barRods: [
               BarChartRodData(
                 y: 70,
-                colors: [Colors.black],
+                colors: [Color.fromARGB(255, 9, 105, 137)],
                 borderRadius: BorderRadius.circular(0),
                 width: Responsive.isDesktop(context) ? 40 : 10,
                 backDrawRodData: BackgroundBarChartRodData(
@@ -156,7 +156,7 @@ class Barchartcomponent extends StatelessWidget {
             barRods: [
               BarChartRodData(
                 y: 20,
-                colors: [Colors.black],
+                colors: [Color.fromARGB(255, 9, 105, 137)],
                 borderRadius: BorderRadius.circular(0),
                 width: Responsive.isDesktop(context) ? 40 : 10,
                 backDrawRodData: BackgroundBarChartRodData(
@@ -172,7 +172,7 @@ class Barchartcomponent extends StatelessWidget {
             barRods: [
               BarChartRodData(
                 y: 50,
-                colors: [Colors.black],
+                colors: [Color.fromARGB(255, 9, 105, 137)],
                 borderRadius: BorderRadius.circular(0),
                 width: Responsive.isDesktop(context) ? 40 : 10,
                 backDrawRodData: BackgroundBarChartRodData(
@@ -188,7 +188,7 @@ class Barchartcomponent extends StatelessWidget {
             barRods: [
               BarChartRodData(
                 y: 60,
-                colors: [Colors.black],
+                colors: [Color.fromARGB(255, 9, 105, 137)],
                 borderRadius: BorderRadius.circular(0),
                 width: Responsive.isDesktop(context) ? 40 : 10,
                 backDrawRodData: BackgroundBarChartRodData(
@@ -204,7 +204,7 @@ class Barchartcomponent extends StatelessWidget {
             barRods: [
               BarChartRodData(
                 y: 40,
-                colors: [Colors.black],
+                colors: [Color.fromARGB(255, 9, 105, 137)],
                 borderRadius: BorderRadius.circular(0),
                 width: Responsive.isDesktop(context) ? 40 : 10,
                 backDrawRodData: BackgroundBarChartRodData(
@@ -220,7 +220,7 @@ class Barchartcomponent extends StatelessWidget {
             barRods: [
               BarChartRodData(
                 y: 20,
-                colors: [Colors.black],
+                colors: [Color.fromARGB(255, 9, 105, 137)],
                 borderRadius: BorderRadius.circular(0),
                 width: Responsive.isDesktop(context) ? 40 : 10,
                 backDrawRodData: BackgroundBarChartRodData(
@@ -236,7 +236,7 @@ class Barchartcomponent extends StatelessWidget {
             barRods: [
               BarChartRodData(
                 y: 80,
-                colors: [Colors.black],
+                colors: [Color.fromARGB(255, 9, 105, 137)],
                 borderRadius: BorderRadius.circular(0),
                 width: Responsive.isDesktop(context) ? 40 : 10,
                 backDrawRodData: BackgroundBarChartRodData(
@@ -252,7 +252,7 @@ class Barchartcomponent extends StatelessWidget {
             barRods: [
               BarChartRodData(
                 y: 10,
-                colors: [Colors.black],
+                colors: [Color.fromARGB(255, 9, 105, 137)],
                 borderRadius: BorderRadius.circular(0),
                 width: Responsive.isDesktop(context) ? 40 : 10,
                 backDrawRodData: BackgroundBarChartRodData(

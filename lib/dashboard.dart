@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-// ignore: unused_import
+import 'package:advance_pdf_viewer/advance_pdf_viewer.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:operator_forvia/component/AppBarActionItems.dart';
 import 'package:operator_forvia/component/barChartComponent.dart';
@@ -9,10 +9,10 @@ import 'package:operator_forvia/component/infoCard.dart';
 import 'package:operator_forvia/component/paymentdetailList.dart';
 import 'package:operator_forvia/component/sidemenu.dart';
 import 'package:operator_forvia/config/responsive.dart';
-// ignore: unused_import
 import 'package:operator_forvia/config/size_config.dart';
 import 'package:operator_forvia/style/colors.dart';
 import 'package:operator_forvia/style/style.dart';
+import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 
 class Dashboard extends StatefulWidget {
   GlobalKey<ScaffoldState> _drawerKey = GlobalKey();
@@ -87,25 +87,78 @@ class _DashboardState extends State<Dashboard> {
                           spacing: 20.0,
                           alignment: WrapAlignment.spaceBetween,
                           children: [
-                            InfoCard(
-                              icon: 'images/credit-card.svg',
-                              label: 'Rappel HSE',
-                              amount: 'Click',
+                            GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => PDFViewerPage(
+                                      pdfPath: 'pdf/flutter-succinctly.pdf',
+                                      pageTitle: 'Rappel HSE',
+                                    ),
+                                  ),
+                                );
+                              },
+                              child: InfoCard(
+                                icon: 'images/credit-card.svg',
+                                label: 'Rappel HSE',
+                                amount: 'Click',
+                              ),
                             ),
-                            InfoCard(
-                              icon: 'images/Transfer.svg',
-                              label: 'Remarque',
-                              amount: 'Click',
+                            GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => PDFViewerPage(
+                                      pdfPath: 'pdf/flutter-succinctly.pdf',
+                                      pageTitle: 'Remarque',
+                                    ),
+                                  ),
+                                );
+                              },
+                              child: InfoCard(
+                                icon: 'images/Transfer.svg',
+                                label: 'Remarque',
+                                amount: 'Click',
+                              ),
                             ),
-                            InfoCard(
-                              icon: 'images/bank.svg',
-                              label: 'Rappel Qualite',
-                              amount: 'Click',
+                            GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => PDFViewerPage(
+                                      pdfPath:
+                                          'pdf/guide-PFE_version-finale.pdf',
+                                      pageTitle: 'Rappel Qualite',
+                                    ),
+                                  ),
+                                );
+                              },
+                              child: InfoCard(
+                                icon: 'images/bank.svg',
+                                label: 'Rappel Qualite',
+                                amount: 'Click',
+                              ),
                             ),
-                            InfoCard(
-                              icon: 'images/invoice.svg',
-                              label: 'Types Opération',
-                              amount: 'Click',
+                            GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => PDFViewerPage(
+                                      pdfPath: 'pdf/inscri.pdf',
+                                      pageTitle: 'Types Opération',
+                                    ),
+                                  ),
+                                );
+                              },
+                              child: InfoCard(
+                                icon: 'images/invoice.svg',
+                                label: 'Types Opération',
+                                amount: 'Click',
+                              ),
                             ),
                           ],
                         ),
@@ -194,6 +247,30 @@ class _DashboardState extends State<Dashboard> {
           ],
         ),
       ),
+    );
+  }
+}
+
+class PDFViewerPage extends StatelessWidget {
+  final String pdfPath;
+  final String pageTitle;
+
+  const PDFViewerPage({
+    required this.pdfPath,
+    required this.pageTitle,
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(pageTitle),
+      ),
+      body: SfPdfViewer.asset(
+        pdfPath,
+        pageLayoutMode: PdfPageLayoutMode.single,
+      ), // Use SfPdfViewer.asset to load PDF from asset
     );
   }
 }

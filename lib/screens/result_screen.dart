@@ -16,26 +16,27 @@ class ResultScreen extends StatelessWidget {
     return Scaffold(
       body: Center(
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20),
+          padding:
+              const EdgeInsets.symmetric(horizontal: 40), // Doubled the padding
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               const Text(
                 'Your Score:',
                 style: TextStyle(
-                  fontSize: 24,
+                  fontSize: 48, // Doubled the font size
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              const SizedBox(height: 20),
+              const SizedBox(height: 40), // Doubled the SizedBox height
               Stack(
                 alignment: Alignment.center,
                 children: [
                   SizedBox(
-                    height: 150,
-                    width: 150,
+                    height: 300, // Doubled the height
+                    width: 300, // Doubled the width
                     child: CircularProgressIndicator(
-                      strokeWidth: 10,
+                      strokeWidth: 20, // Doubled the strokeWidth
                       value: score / 9,
                       color: Colors.green,
                       backgroundColor: Colors.grey[300],
@@ -45,23 +46,26 @@ class ResultScreen extends StatelessWidget {
                     children: [
                       Text(
                         score.toString(),
-                        style: const TextStyle(fontSize: 40),
+                        style: const TextStyle(
+                            fontSize: 80), // Doubled the font size
                       ),
-                      const SizedBox(height: 10),
+                      const SizedBox(height: 20), // Doubled the SizedBox height
                       Text(
                         '${(score / questions.length * 100).round()}%',
-                        style: const TextStyle(fontSize: 18),
+                        style: const TextStyle(
+                            fontSize: 36), // Doubled the font size
                       )
                     ],
                   ),
                 ],
               ),
-              const SizedBox(height: 30),
+              const SizedBox(height: 60), // Doubled the SizedBox height
               ElevatedButton(
                 onPressed: () {
                   Navigator.pop(context); // Return to the previous screen
                 },
-                child: Text('Return to Dashboard'),
+                child: Text('Return to Dashboard',
+                    style: TextStyle(fontSize: 24)), // Doubled the font size
               ),
             ],
           ),

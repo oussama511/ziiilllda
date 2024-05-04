@@ -1,8 +1,12 @@
 const recentActivities = [
-  {"icon": 'images/quality.svg', "label": 'Qualité ....', "amount": "7/10"},
-  {"icon": 'images/quality.svg', "label": 'Qualité ....', "amount": "8/10"},
-  {"icon": 'images/Security.svg', "label": 'Sécurité', "amount": "9/10"},
-  {"icon": 'images/all.svg', "label": 'réactivité', "amount": "../.."},
+  {"icon": 'images/quality.svg', "label": 'Comportementale', "amount": "7/10"},
+  {
+    "icon": 'images/quality.svg',
+    "label": 'Formation de couture',
+    "amount": "8/10"
+  },
+  {"icon": 'images/Security.svg', "label": 'Machine', "amount": "9/10"},
+  {"icon": 'images/all.svg', "label": 'Couture', "amount": "../.."},
 ];
 
 const upcomingPayments = [
