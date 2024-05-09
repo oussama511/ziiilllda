@@ -78,8 +78,7 @@ class SideMenu extends StatelessWidget {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) =>
-                          const QuizScreen()), // Use Dashboard3
+                      builder: (context) => Dashboard3()), // Use Dashboard3
                 );
               },
               icon: Container(

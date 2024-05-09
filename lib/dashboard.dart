@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:advance_pdf_viewer/advance_pdf_viewer.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:operator_forvia/component/AppBarActionItems.dart';
 import 'package:operator_forvia/component/barChartComponent.dart';
 import 'package:operator_forvia/component/header.dart';
 import 'package:operator_forvia/component/historyTable.dart';
-import 'package:operator_forvia/component/infoCard.dart';
 import 'package:operator_forvia/component/paymentdetailList.dart';
 import 'package:operator_forvia/component/sidemenu.dart';
 import 'package:operator_forvia/config/responsive.dart';
@@ -22,6 +20,8 @@ class Dashboard extends StatefulWidget {
 
 class _DashboardState extends State<Dashboard> {
   final GlobalKey<ScaffoldState> _drawerKey = GlobalKey();
+  String selectedOperator = 'Operator 1'; // Default value
+
   @override
   Widget build(BuildContext context) {
     SizeConfig.init(context);
@@ -87,79 +87,7 @@ class _DashboardState extends State<Dashboard> {
                           spacing: 20.0,
                           alignment: WrapAlignment.spaceBetween,
                           children: [
-                            GestureDetector(
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => PDFViewerPage(
-                                      pdfPath: 'pdf/flutter-succinctly.pdf',
-                                      pageTitle: 'Rappel HSE',
-                                    ),
-                                  ),
-                                );
-                              },
-                              child: InfoCard(
-                                icon: 'images/credit-card.svg',
-                                label: 'Rappel HSE',
-                                amount: 'Click',
-                              ),
-                            ),
-                            GestureDetector(
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => PDFViewerPage(
-                                      pdfPath: 'pdf/flutter-succinctly.pdf',
-                                      pageTitle: 'Remarque',
-                                    ),
-                                  ),
-                                );
-                              },
-                              child: InfoCard(
-                                icon: 'images/Transfer.svg',
-                                label: 'Remarque',
-                                amount: 'Click',
-                              ),
-                            ),
-                            GestureDetector(
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => PDFViewerPage(
-                                      pdfPath:
-                                          'pdf/guide-PFE_version-finale.pdf',
-                                      pageTitle: 'Rappel Qualite',
-                                    ),
-                                  ),
-                                );
-                              },
-                              child: InfoCard(
-                                icon: 'images/bank.svg',
-                                label: 'Rappel Qualite',
-                                amount: 'Click',
-                              ),
-                            ),
-                            GestureDetector(
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => PDFViewerPage(
-                                      pdfPath: 'pdf/inscri.pdf',
-                                      pageTitle: 'Types Opération',
-                                    ),
-                                  ),
-                                );
-                              },
-                              child: InfoCard(
-                                icon: 'images/invoice.svg',
-                                label: 'Types Opération',
-                                amount: 'Click',
-                              ),
-                            ),
+                            // Removed InfoCard widgets
                           ],
                         ),
                       ),
@@ -179,10 +107,54 @@ class _DashboardState extends State<Dashboard> {
                                 fontWeight: FontWeight.w800,
                                 color: AppColors.secondary,
                               ),
-                              PrimaryText(
-                                text: 'Operateur N°',
-                                size: 30,
-                                fontWeight: FontWeight.w800,
+                              Container(
+                                width: 200, // Adjust the width as needed
+                                height: 50, // Adjust the height as needed
+                                child: DropdownButton<String>(
+                                  value: selectedOperator,
+                                  onChanged: (String? newValue) {
+                                    setState(() {
+                                      selectedOperator = newValue!;
+                                    });
+                                  },
+                                  style: TextStyle(
+                                      fontSize:
+                                          16), // Customize text size for selected item
+                                  selectedItemBuilder: (BuildContext context) {
+                                    return <String>[
+                                      'Operator 1',
+                                      'Operator 2',
+                                      'Operator 3'
+                                    ].map<Widget>((String value) {
+                                      return Center(
+                                        child: Text(
+                                          value,
+                                          style: TextStyle(
+                                              fontSize:
+                                                  16), // Customize text size for selected item
+                                        ),
+                                      );
+                                    }).toList();
+                                  },
+                                  items: <String>[
+                                    'Operator 1',
+                                    'Operator 2',
+                                    'Operator 3'
+                                  ].map<DropdownMenuItem<String>>(
+                                      (String value) {
+                                    return DropdownMenuItem<String>(
+                                      value: value,
+                                      child: Center(
+                                        child: Text(
+                                          value,
+                                          style: TextStyle(
+                                              fontSize:
+                                                  16), // Customize text size for dropdown items
+                                        ),
+                                      ),
+                                    );
+                                  }).toList(),
+                                ),
                               ),
                             ],
                           ),

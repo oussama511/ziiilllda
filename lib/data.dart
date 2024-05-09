@@ -10,8 +10,8 @@ const recentActivities = [
 ];
 
 const upcomingPayments = [
-  {"icon": 'images/audi-1.svg', "label": 'Projet Audi', "amount": "32/35"},
-  {"icon": 'images/bmw.svg', "label": 'Projet BMW', "amount": "35/35"},
+  {"icon": 'images/audi-1.svg', "label": 'Projet Audi', "amount": "Read"},
+  {"icon": 'images/bmw.svg', "label": 'Projet BMW', "amount": "Read"},
 ];
 
 const transactionHistory = [

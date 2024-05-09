@@ -6,12 +6,12 @@ import 'package:operator_forvia/style/style.dart';
 class PaymentListTile extends StatelessWidget {
   final String? icon;
   final String? label;
-  final String? amount;
-  const PaymentListTile(
-      {@required this.icon,
-      this.label,
-      this.amount,
-      required Null Function() onPressed});
+  final VoidCallback? onPressed;
+  const PaymentListTile({
+    @required this.icon,
+    this.label,
+    this.onPressed,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -39,15 +39,27 @@ class PaymentListTile extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           PrimaryText(
-            text: 'Successfuly',
+            text: 'Notes',
             size: 12.0,
             color: AppColors.secondary,
           ),
-          PrimaryText(
-              text: amount!,
-              size: 16.0,
-              color: AppColors.black,
-              fontWeight: FontWeight.w600),
+          // Check if onPressed is provided, if so, display as button
+          if (onPressed != null)
+            ElevatedButton(
+              onPressed: onPressed, // Assign onPressed callback
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppColors.primary, // Button color
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(5.0),
+                ),
+              ),
+              child: PrimaryText(
+                text: 'Details', // Button text
+                size: 14.0,
+                color: AppColors.white,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
         ],
       ),
     );

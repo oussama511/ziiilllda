@@ -1,159 +1,131 @@
-import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:operator_forvia/component/AppBarActionItems.dart';
-import 'package:operator_forvia/component/barChartComponent.dart';
-import 'package:operator_forvia/component/historyTable.dart';
-import 'package:operator_forvia/component/paymentDetailList.dart';
-import 'package:operator_forvia/component/sideMenu.dart';
+import 'package:operator_forvia/component/header.dart';
+import 'package:operator_forvia/component/paymentdetailList.dart';
+import 'package:operator_forvia/component/sidemenu.dart';
 import 'package:operator_forvia/config/responsive.dart';
 import 'package:operator_forvia/config/size_config.dart';
-import 'package:operator_forvia/data.dart';
 import 'package:operator_forvia/style/colors.dart';
 import 'package:operator_forvia/style/style.dart';
+import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 
 class Dashboard2 extends StatefulWidget {
+  GlobalKey<ScaffoldState> _drawerKey = GlobalKey();
   @override
-  _Dashboard2State createState() => _Dashboard2State();
+  _DashboardState createState() => _DashboardState();
 }
 
-class _Dashboard2State extends State<Dashboard2> {
+class _DashboardState extends State<Dashboard2> {
   final GlobalKey<ScaffoldState> _drawerKey = GlobalKey();
-  late Stopwatch _stopwatch;
-  late Timer _timer;
-  String _display = '00:00:00';
-  bool _isValidated = false;
-  String? _selectedOperation;
-  bool _isStopwatchRunning = false;
 
-  @override
-  void initState() {
-    super.initState();
-    _stopwatch = Stopwatch();
-    _timer = Timer.periodic(
-        Duration(milliseconds: 10), (Timer t) => _updateDisplay());
-  }
+  // List to store operators
+  List<Operator> operators = [];
 
-  void _updateDisplay() {
-    if (_stopwatch.isRunning) {
+  // Controller for operator name
+  TextEditingController nameController = TextEditingController();
+
+  // Controller for operator last name
+  TextEditingController lastNameController = TextEditingController();
+
+  // Controller for code RFID
+  TextEditingController codeRfidController = TextEditingController();
+
+  // Controller for matricule
+  TextEditingController matriculeController = TextEditingController();
+
+  // Gender options
+  final List<String> genderOptions = ['Male', 'Female'];
+
+  // Controller for selected gender
+  String selectedGender = 'Male';
+
+  // Experience options
+  final List<String> experienceOptions = ['Débutant', 'Amateur', 'Avancée'];
+
+  // Controller for selected experience
+  String selectedExperience = 'Débutant';
+
+  // Index of the operator being modified
+  int? modifyIndex;
+
+  // Function to add operator
+  void addOperator() {
+    // Check if all fields are filled out
+    if (nameController.text.isNotEmpty &&
+        lastNameController.text.isNotEmpty &&
+        codeRfidController.text.isNotEmpty &&
+        matriculeController.text.isNotEmpty) {
       setState(() {
-        _display = _stopwatch.elapsed.inHours.toString().padLeft(2, '0') +
-            ':' +
-            (_stopwatch.elapsed.inMinutes % 60).toString().padLeft(2, '0') +
-            ':' +
-            (_stopwatch.elapsed.inSeconds % 60).toString().padLeft(2, '0') +
-            ':' +
-            ((_stopwatch.elapsed.inMilliseconds % 1000) / 10)
-                .floor()
-                .toString()
-                .padLeft(2, '0');
+        // Check if we're modifying an existing operator
+        if (modifyIndex != null) {
+          operators[modifyIndex!] = Operator(
+            name: nameController.text,
+            lastName: lastNameController.text,
+            gender: selectedGender,
+            codeRfid: codeRfidController.text,
+            matricule: matriculeController.text,
+            experience: selectedExperience,
+          );
+          modifyIndex = null; // Reset modifyIndex after modification
+        } else {
+          operators.add(
+            Operator(
+              name: nameController.text,
+              lastName: lastNameController.text,
+              gender: selectedGender,
+              codeRfid: codeRfidController.text,
+              matricule: matriculeController.text,
+              experience: selectedExperience,
+            ),
+          );
+        }
+        // Clear text controllers after adding or modifying operator
+        nameController.clear();
+        lastNameController.clear();
+        codeRfidController.clear();
+        matriculeController.clear();
+        // Reset selected gender and experience
+        selectedGender = 'Male';
+        selectedExperience = 'Débutant';
       });
+    } else {
+      // Show a dialog or snackbar indicating that all fields are required
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: Text('Error'),
+          content: Text('All fields are required.'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: Text('OK'),
+            ),
+          ],
+        ),
+      );
     }
   }
 
-  void _startStopwatch() {
+  // Function to delete operator
+  void deleteOperator(int index) {
     setState(() {
-      if (_selectedOperation != null) {
-        _isStopwatchRunning = true;
-        _stopwatch.start();
-      } else {
-        showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return AlertDialog(
-              title: Text('Please select an operation.'),
-              actions: [
-                TextButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                  child: Text('OK'),
-                ),
-              ],
-            );
-          },
-        );
-      }
+      operators.removeAt(index);
     });
   }
 
-  void _stopStopwatch() {
+  // Function to set the modifyIndex and populate the fields for modification
+  void startModifyOperator(int index) {
     setState(() {
-      _isStopwatchRunning = false;
-      _stopwatch.stop();
+      modifyIndex = index;
+      nameController.text = operators[index].name;
+      lastNameController.text = operators[index].lastName;
+      selectedGender = operators[index].gender;
+      codeRfidController.text = operators[index].codeRfid;
+      matriculeController.text = operators[index].matricule;
+      selectedExperience = operators[index].experience;
     });
-  }
-
-  void _resetStopwatch() {
-    setState(() {
-      _stopwatch.reset();
-      _display = '00:00:00';
-      _isStopwatchRunning = false;
-      _selectedOperation = null; // Reset selected operation
-    });
-  }
-
-  void _validateTime() {
-    // Show dialog or bottom sheet for validation
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          contentPadding: EdgeInsets.zero,
-          content: SizedBox(
-            width: 300, // Adjust the width as needed
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                SizedBox(height: 20),
-                Center(
-                  child: Text(
-                    'Validation',
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-                SizedBox(height: 20),
-                ElevatedButton(
-                  onPressed: () {
-                    setState(() {
-                      _isValidated = true;
-                    });
-                    Navigator.of(context).pop();
-                  },
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 16.0),
-                    child: Text(
-                      'Validé',
-                      style: TextStyle(fontSize: 18),
-                    ),
-                  ),
-                ),
-                SizedBox(height: 10),
-                ElevatedButton(
-                  onPressed: () {
-                    setState(() {
-                      _isValidated = false;
-                    });
-                    Navigator.of(context).pop();
-                  },
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 16.0),
-                    child: Text(
-                      'Non Validé',
-                      style: TextStyle(fontSize: 18),
-                    ),
-                  ),
-                ),
-                SizedBox(height: 20),
-              ],
-            ),
-          ),
-        );
-      },
-    );
   }
 
   @override
@@ -210,135 +182,134 @@ class _Dashboard2State extends State<Dashboard2> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Center(
-                        child: PrimaryText(
-                          text: 'Time Counting Interface',
-                          size: 30,
-                          fontWeight: FontWeight.w800,
+                      Header(),
+                      SizedBox(
+                        height: SizeConfig.blockSizeVertical * 4,
+                      ),
+                      // Operator management section
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 20.0),
+                        child: Text(
+                          'Operator Management',
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                      TextField(
+                        controller: nameController,
+                        decoration: InputDecoration(labelText: 'Name'),
+                      ),
+                      TextField(
+                        controller: lastNameController,
+                        decoration: InputDecoration(labelText: 'Last Name'),
+                      ),
+                      TextField(
+                        controller: codeRfidController,
+                        decoration: InputDecoration(labelText: 'Code RFID'),
+                      ),
+                      TextField(
+                        controller: matriculeController,
+                        decoration: InputDecoration(labelText: 'Matricule'),
+                      ),
+                      DropdownButtonFormField<String>(
+                        value: selectedGender,
+                        onChanged: (String? newValue) {
+                          setState(() {
+                            selectedGender = newValue!;
+                          });
+                        },
+                        items: genderOptions.map((String gender) {
+                          return DropdownMenuItem<String>(
+                            value: gender,
+                            child: Text(gender),
+                          );
+                        }).toList(),
+                        decoration: InputDecoration(labelText: 'Gender'),
+                      ),
+                      DropdownButtonFormField<String>(
+                        value: selectedExperience,
+                        onChanged: (String? newValue) {
+                          setState(() {
+                            selectedExperience = newValue!;
+                          });
+                        },
+                        items: experienceOptions.map((String experience) {
+                          return DropdownMenuItem<String>(
+                            value: experience,
+                            child: Text(experience),
+                          );
+                        }).toList(),
+                        decoration: InputDecoration(labelText: 'Experience'),
+                      ),
+                      SizedBox(height: 20),
+                      ElevatedButton(
+                        onPressed: () {
+                          addOperator();
+                        },
+                        child: Text('Add Operator'),
+                      ),
+                      SizedBox(height: 20),
+                      // End of operator management section
+
+                      // Operator tables
+                      if (operators.isNotEmpty)
+                        Column(
+                          children: List.generate(
+                            (operators.length / 3).ceil(),
+                            (index) {
+                              return Row(
+                                children: List.generate(
+                                  3,
+                                  (idx) {
+                                    final currentIndex = index * 3 + idx;
+                                    return Expanded(
+                                      child: currentIndex < operators.length
+                                          ? Container(
+                                              padding: EdgeInsets.symmetric(
+                                                  horizontal: 8.0),
+                                              child: OperatorTable(
+                                                operator:
+                                                    operators[currentIndex],
+                                                onDelete: () {
+                                                  deleteOperator(currentIndex);
+                                                },
+                                                onModify: () {
+                                                  startModifyOperator(
+                                                      currentIndex);
+                                                },
+                                              ),
+                                            )
+                                          : SizedBox.shrink(),
+                                    );
+                                  },
+                                ),
+                              );
+                            },
+                          ),
+                        ),
+
+                      SizedBox(
+                        width: SizeConfig.screenWidth,
+                        child: Wrap(
+                          runSpacing: 20.0,
+                          spacing: 20.0,
+                          alignment: WrapAlignment.spaceBetween,
+                          children: [
+                            // Removed InfoCard widgets
+                          ],
                         ),
                       ),
                       SizedBox(
                         height: SizeConfig.blockSizeVertical * 4,
                       ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          PrimaryText(
-                            text: _display,
-                            size: 120, // Increased size
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ],
-                      ),
-                      SizedBox(
-                        height: SizeConfig.blockSizeVertical * 4,
-                      ),
-                      DropdownButton<String>(
-                        hint: Text('Select Operation'),
-                        value: _selectedOperation,
-                        onChanged: _isStopwatchRunning
-                            ? null
-                            : (newValue) {
-                                setState(() {
-                                  _selectedOperation = newValue;
-                                });
-                              },
-                        items: transactionHistory
-                            .map<DropdownMenuItem<String>>(
-                              (item) => DropdownMenuItem(
-                                value: item['label'],
-                                child: Text(item['label']!),
-                              ),
-                            )
-                            .toList(),
-                      ),
-                      SizedBox(
-                        height: SizeConfig.blockSizeVertical * 2,
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          ElevatedButton(
-                            onPressed: _startStopwatch,
-                            child: Text('Start'),
-                          ),
-                          SizedBox(width: 20),
-                          ElevatedButton(
-                            onPressed:
-                                _isStopwatchRunning ? _stopStopwatch : null,
-                            child: Text('Stop'),
-                          ),
-                          SizedBox(width: 20),
-                          ElevatedButton(
-                            onPressed: _resetStopwatch,
-                            child: Text('Reset'),
-                          ),
-                          SizedBox(width: 20),
-                          ElevatedButton(
-                            onPressed: _validateTime,
-                            child: Text('Validation'),
-                          ),
-                        ],
-                      ),
-                      SizedBox(
-                        height: SizeConfig.blockSizeVertical * 4,
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              PrimaryText(
-                                text: 'Historique',
-                                size: 16,
-                                fontWeight: FontWeight.w800,
-                                color: AppColors.secondary,
-                              ),
-                              PrimaryText(
-                                text: 'Operateur N°',
-                                size: 30,
-                                fontWeight: FontWeight.w800,
-                              ),
-                            ],
-                          ),
-                          PrimaryText(
-                            text: 'Dérnier Test',
-                            size: 16,
-                            color: AppColors.secondary,
-                          )
-                        ],
-                      ),
-                      SizedBox(
-                        height: SizeConfig.blockSizeVertical * 3,
-                      ),
-                      Container(
-                        height: 180,
-                        child: Barchartcomponent(),
-                      ),
                       SizedBox(
                         height: SizeConfig.blockSizeVertical * 5,
                       ),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          PrimaryText(
-                            text: 'Historique',
-                            size: 30,
-                            fontWeight: FontWeight.w800,
-                          ),
-                          PrimaryText(
-                            text: 'Opération-Temps-Status',
-                            size: 16,
-                            color: AppColors.secondary,
-                          ),
-                        ],
-                      ),
                       SizedBox(
                         height: SizeConfig.blockSizeVertical * 3,
                       ),
-                      Historytable(),
                       if (!Responsive.isDesktop(context)) PaymentDetailList()
                     ],
                   ),
@@ -368,28 +339,132 @@ class _Dashboard2State extends State<Dashboard2> {
   }
 }
 
-class PrimaryText extends StatelessWidget {
-  final String text;
-  final double size;
-  final FontWeight fontWeight;
-  final Color color;
+class Operator {
+  final String name;
+  final String lastName;
+  final String gender;
+  final String codeRfid;
+  final String matricule;
+  final String experience;
 
-  PrimaryText({
-    required this.text,
-    this.size = 14,
-    this.fontWeight = FontWeight.normal,
-    this.color = AppColors.black,
+  Operator({
+    required this.name,
+    required this.lastName,
+    required this.gender,
+    required this.codeRfid,
+    required this.matricule,
+    required this.experience,
+  });
+}
+
+class OperatorTable extends StatelessWidget {
+  final Operator operator;
+  final VoidCallback onDelete;
+  final VoidCallback onModify;
+
+  const OperatorTable({
+    required this.operator,
+    required this.onDelete,
+    required this.onModify,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Text(
-      text,
-      style: TextStyle(
-        fontSize: size,
-        fontWeight: fontWeight,
-        color: color,
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 20),
+      child: Card(
+        elevation: 3,
+        child: Padding(
+          padding: const EdgeInsets.all(12.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Operator Details',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              SizedBox(height: 10),
+              DataTable(
+                columns: [
+                  DataColumn(
+                      label:
+                          SizedBox.shrink()), // Empty column to remove labels
+                  DataColumn(
+                      label:
+                          SizedBox.shrink()), // Empty column to remove labels
+                ],
+                rows: [
+                  DataRow(cells: [
+                    DataCell(Text('Name')),
+                    DataCell(Text(operator.name)),
+                  ]),
+                  DataRow(cells: [
+                    DataCell(Text('Last Name')),
+                    DataCell(Text(operator.lastName)),
+                  ]),
+                  DataRow(cells: [
+                    DataCell(Text('Gender')),
+                    DataCell(Text(operator.gender)),
+                  ]),
+                  DataRow(cells: [
+                    DataCell(Text('Code RFID')),
+                    DataCell(Text(operator.codeRfid)),
+                  ]),
+                  DataRow(cells: [
+                    DataCell(Text('Matricule')),
+                    DataCell(Text(operator.matricule)),
+                  ]),
+                  DataRow(cells: [
+                    DataCell(Text('Experience')),
+                    DataCell(Text(operator.experience)),
+                  ]),
+                  DataRow(cells: [
+                    DataCell(
+                      ElevatedButton(
+                        onPressed: onDelete,
+                        child: Text('Delete'),
+                      ),
+                    ),
+                    DataCell(
+                      ElevatedButton(
+                        onPressed: onModify,
+                        child: Text('Modify'),
+                      ),
+                    ),
+                  ]),
+                ],
+              ),
+            ],
+          ),
+        ),
       ),
+    );
+  }
+}
+
+class PDFViewerPage extends StatelessWidget {
+  final String pdfPath;
+  final String pageTitle;
+
+  const PDFViewerPage({
+    required this.pdfPath,
+    required this.pageTitle,
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(pageTitle),
+      ),
+      body: SfPdfViewer.asset(
+        pdfPath,
+        pageLayoutMode: PdfPageLayoutMode.single,
+      ), // Use SfPdfViewer.asset to load PDF from asset
     );
   }
 }
